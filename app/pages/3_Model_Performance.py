@@ -1,4 +1,11 @@
+from pathlib import Path
+import sys
 import streamlit as st
+
+APP_DIR = Path(__file__).resolve().parents[1]
+if str(APP_DIR) not in sys.path:
+    sys.path.append(str(APP_DIR))
+
 from utils import get_model_info
 
 st.title("Model Performance")

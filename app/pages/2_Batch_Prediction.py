@@ -1,5 +1,12 @@
+from pathlib import Path
+import sys
 import pandas as pd
 import streamlit as st
+
+APP_DIR = Path(__file__).resolve().parents[1]
+if str(APP_DIR) not in sys.path:
+    sys.path.append(str(APP_DIR))
+
 from utils import predict_local
 
 st.title("Batch Prediction")
@@ -12,11 +19,10 @@ if uploaded_file is not None:
     st.dataframe(df.head())
 
     if st.button("Run Batch Prediction"):
-        results = []
         try:
+            results = []
             for _, row in df.iterrows():
-                payload = row.to_dict()
-                result = predict_local(payload)
+                result = predict_local(row.to_dict())
                 results.append(result)
 
             result_df = df.copy()
@@ -27,10 +33,10 @@ if uploaded_file is not None:
             st.success("Batch prediction completed")
             st.dataframe(result_df)
 
-            csv = result_df.to_csv(index=False).encode("utf-8")
+            csv_data = result_df.to_csv(index=False).encode("utf-8")
             st.download_button(
                 "Download Results CSV",
-                data=csv,
+                data=csv_data,
                 file_name="batch_predictions.csv",
                 mime="text/csv",
             )
