@@ -1,6 +1,6 @@
 import pandas as pd
 import streamlit as st
-from app.utils import predict_api
+from utils import predict_local
 
 st.title("Batch Prediction")
 
@@ -13,11 +13,10 @@ if uploaded_file is not None:
 
     if st.button("Run Batch Prediction"):
         results = []
-
         try:
             for _, row in df.iterrows():
                 payload = row.to_dict()
-                result = predict_api(payload)
+                result = predict_local(payload)
                 results.append(result)
 
             result_df = df.copy()
@@ -33,7 +32,7 @@ if uploaded_file is not None:
                 "Download Results CSV",
                 data=csv,
                 file_name="batch_predictions.csv",
-                mime="text/csv"
+                mime="text/csv",
             )
         except Exception as e:
             st.error(f"Batch prediction failed: {e}")
